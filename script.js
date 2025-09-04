@@ -115,8 +115,7 @@ function updateProgress() {
 
 // Yes/Noの回答を選択
 function selectAnswer(answer) {
-    if (currentAnswer) return;
-    
+    // 自信度を選ぶまでは Yes/No を変更可能にする
     currentAnswer = answer;
     
     // ビジュアルフィードバック
@@ -129,7 +128,7 @@ function selectAnswer(answer) {
         document.getElementById('noButton').classList.add('selected');
     }
     
-    // 自信度セクションを表示
+    // 自信度セクションを表示（変更可能だが常に表示しておく）
     document.getElementById('confidenceSection').classList.add('show');
 }
 
