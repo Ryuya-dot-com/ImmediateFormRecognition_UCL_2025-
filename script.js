@@ -185,7 +185,7 @@ function exportResults() {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     
-    // ファイル名を form_recognition_参加者番号_日付と時間.csv の形式で生成
+    // ファイル名を immediate_form_recognition_参加者番号_日付と時間.csv の形式で生成
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -194,7 +194,7 @@ function exportResults() {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
     
-    const filename = `form_recognition_${participantInfo.id}_${year}${month}${day}_${hours}${minutes}${seconds}.csv`;
+    const filename = `immediate_form_recognition_${participantInfo.id}_${year}${month}${day}_${hours}${minutes}${seconds}.csv`;
     
     link.setAttribute('href', url);
     link.setAttribute('download', filename);
