@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>語彙テスト</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 90%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+            color: #333;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        #testScreen {
+            min-height: 550px; /* テスト画面の高さを固定 */
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #666;
+        }
+
+        .button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .button:hover {
+            background-color: #555;
+        }
+
+        .instruction-box {
+            background: #f9f9f9;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #333;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .word-display {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .word {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .answer-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .key-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 20px 0;
+        }
+
+        .key-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid #ddd;
+            background: white;
+        }
+
+        .key-button:hover {
+            background: #f9f9f9;
+        }
+
+        .key-button.selected {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+
+        .key-label {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .key-hint {
+            font-size: 1em;
+            opacity: 0.7;
+        }
+
+        .confidence-section {
+            margin-top: 30px;
+            min-height: 220px; /* レイアウトの高さを常時確保してジャンプを防止 */
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .confidence-section.show {
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .confidence-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .confidence-button {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .confidence-button:hover {
+            background: #f9f9f9;
+        }
+
+        .confidence-button.selected {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+
+        .results {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .result-message {
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 初期画面 -->
+        <div id="startScreen" class="screen active">
+            <h1>語彙テスト</h1>
+            <div class="input-group">
+                <label for="participantId">参加者ID</label>
+                <input type="text" id="participantId" placeholder="例: 001">
+            </div>
+            <div class="input-group">
+                <label for="participantName">名前</label>
+                <input type="text" id="participantName" placeholder="お名前を入力してください">
+            </div>
+            <div class="center">
+                <button class="button" onclick="startTest()">テストを開始</button>
+            </div>
+        </div>
+
+        <!-- 説明画面 -->
+        <div id="instructionScreen" class="screen">
+            <h1>語彙テスト - 説明</h1>
+            <div class="instruction-box">
+                <p>これから英単語を1つずつ表示します。</p>
+                <p style="margin-top: 10px;">教材の中で出てきた単語かどうか、Yes/No をマウスで選んでください。</p>
+                <p style="margin-top: 10px;">また、その回答にどの程度自信があるか、以下の4段階から選んでください：</p>
+                <ul style="margin: 15px 0; padding-left: 25px;">
+                    <li>全く自信がない</li>
+                    <li>自信がない</li>
+                    <li>自信がある</li>
+                    <li>とても自信がある</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>準備ができたら、下のボタンをクリックしてテストを開始してください。</strong></p>
+            </div>
+            <div class="center">
+                <button class="button" onclick="beginTest()">テスト開始</button>
+            </div>
+        </div>
+
+        <!-- テスト画面 -->
+        <div id="testScreen" class="screen">
+            <h1>語彙テスト</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="word-display">
+                <div class="word" id="currentWord">ready</div>
+            </div>
+
+            <div class="answer-section">
+                <p style="font-size: 1.1em; margin-bottom: 15px;">この単語は教材に出てきましたか？</p>
+                <div class="key-buttons">
+                    <div class="key-button" id="yesButton" onclick="selectAnswer('yes')">
+                        <div class="key-label">Yes</div>
+                    </div>
+                    <div class="key-button" id="noButton" onclick="selectAnswer('no')">
+                        <div class="key-label">No</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="confidence-section" id="confidenceSection">
+                <p style="text-align: center; font-size: 1.1em;">回答の自信度を選んでください：</p>
+                <div class="confidence-buttons">
+                    <div class="confidence-button" onclick="selectConfidence(1, '全く自信がない', this)">
+                        全く自信がない
+                    </div>
+                    <div class="confidence-button" onclick="selectConfidence(2, '自信がない', this)">
+                        自信がない
+                    </div>
+                    <div class="confidence-button" onclick="selectConfidence(3, '自信がある', this)">
+                        自信がある
+                    </div>
+                    <div class="confidence-button" onclick="selectConfidence(4, 'とても自信がある', this)">
+                        とても自信がある
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="resultScreen" class="screen">
+            <h1>テスト完了</h1>
+            <div class="results">
+                <p class="result-message">お疲れさまでした。テストが完了しました。</p>
+                <p class="result-message">結果は下のボタンからダウンロードできます。</p>
+                <button class="button" onclick="exportResults()">結果をCSVでダウンロード</button>
+                <button class="button" onclick="location.reload()">新しいテストを開始</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
