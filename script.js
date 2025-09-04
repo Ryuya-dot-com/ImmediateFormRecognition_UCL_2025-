@@ -26,7 +26,7 @@ const words = [
     'havoc',
     'ballast',
     'garment',
-    'innflux',
+    'influx',
     'blizzard'
 ];
 
